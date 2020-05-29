@@ -1,0 +1,11 @@
+PGA460.c:13:9:calc_checksum	4	static
+PGA460.c:37:6:write_reg	16	static
+PGA460.c:50:6:request_data	16	static
+PGA460.c:74:10:get_data	8	static
+PGA460.c:96:8:init_pga_memory	16	static
+PGA460.c:129:6:init_single	8	static
+PGA460.c:140:6:init_burst	8	static
+PGA460.c:151:6:burst	0	static
+PGA460.c:157:6:single	0	static
+PGA460.c:162:13:burst_callback	0	static
+PGA460.c:164:13:single_callback	0	static

@@ -1,0 +1,8 @@
+usart.c:23:8:USART_WriteData	16	static
+usart.c:18:5:_write	8	static
+usart.c:50:8:USART_WriteString	8	static
+usart.c:55:6:USART_GetChar	8	static
+usart.c:68:8:USART_ReadData	16	static
+usart.c:83:6:HAL_UART_RxCpltCallback	8	static
+usart.c:94:6:HAL_UART_TxCpltCallback	8	static
+usart.c:117:6:USART_Init	8	static
