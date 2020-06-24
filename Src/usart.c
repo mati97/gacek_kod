@@ -80,6 +80,11 @@ size_t USART_ReadData(char *data, size_t maxSize){
 	return i;
 }
 
+void USART_ClearRx(void){
+	RingBuffer_Clear(&USART_RingBuffer_Rx);
+}
+
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
 	if(huart->Instance==HUARTx.Instance){

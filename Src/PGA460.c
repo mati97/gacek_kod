@@ -14,7 +14,7 @@ uint8_t calc_checksum(uint8_t* input_array, uint8_t size){
 
 	uint16_t carry = 0;
 
-	for (int i = 0; i < 3; i++){
+	for (int i = 0; i < size; i++){
 
 		if ((*(input_array+i) + carry) < carry){
 
@@ -36,7 +36,7 @@ uint8_t calc_checksum(uint8_t* input_array, uint8_t size){
 
 void write_reg(uint8_t address, uint8_t data){
 
-	uint8_t arr[5]={0x55,0x0a};
+	static uint8_t arr[5]={0x55,0x0a};
 
 	arr[2] = address;
 	arr[3] = data;
@@ -45,11 +45,20 @@ void write_reg(uint8_t address, uint8_t data){
 	USART_WriteData(arr, 5);
 }
 
+void burst_listen(uint8_t number){
+
+	static uint8_t arr[4]={0x55,0x00};
+
+	arr[2] = number;
+	arr[3] = calc_checksum((arr+1), 2);
+
+	USART_WriteData(arr, 4);
+}
 
 //in case of data dump, or ultrasonic measurement, address is not important
 void request_data(uint8_t cmd, uint8_t address){
 
-	uint8_t arr[4]={0x55};
+	static uint8_t arr[4]={0x55};
 
 	switch (cmd){
 	case 0x05:
@@ -127,7 +136,7 @@ int8_t init_pga_memory(void){
 	  return 0;
 }
 void init_single(TIM_HandleTypeDef *htim){
-	htim->Init.Prescaler = 43;
+	htim->Init.Prescaler = 21;//43;
 	  if (HAL_TIM_Base_Init(htim) != HAL_OK)
 	  {
 	    Error_Handler();
@@ -138,7 +147,7 @@ void init_single(TIM_HandleTypeDef *htim){
 }
 
 void init_burst(TIM_HandleTypeDef *htim){
-	htim->Init.Prescaler = 21;
+	htim->Init.Prescaler = 43;//21;
 	  if (HAL_TIM_Base_Init(htim) != HAL_OK)
 	  {
 	    Error_Handler();
@@ -154,11 +163,29 @@ void burst(uint16_t time){
 
 }
 
+uint8_t stage=0;
+
 void single(uint16_t time){
 
 
+
+	if(time>0&&time<10&&stage==0){
+		burst_listen(1);
+		stage=1;
+		USART_ClearRx();
+	}
+
+	if(time>62259&&stage==1){
+		request_data(0x05,0x00);
+		stage=2;
+	}
+
+	if(time>65520&&stage==2){
+		single_callback(get_data(0x05));
+		stage=0;
+	}
 }
 
 __weak void burst_callback(void){}
 
-__weak void single_callback(void){}
+__weak void single_callback(uint8_t* rcv){}

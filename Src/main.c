@@ -54,6 +54,8 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 uint8_t address;
 uint8_t data;
+uint16_t timmy;
+float dist;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,6 +72,13 @@ static void MX_TIM1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void single_callback(uint8_t* rcv){
+
+	dist = 300*((float)(*(rcv+1)<<8|*(rcv+2)))/2000000;
+
+
+}
+
 
 /* USER CODE END 0 */
 
@@ -107,8 +116,9 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
+  USART_Init();
   init_pga_memory();
-  init_burst(&htim1);
+  init_single(&htim1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -116,6 +126,7 @@ int main(void)
   while (1)
   {
 	single(TIM1->CNT);
+timmy = TIM1->CNT;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -251,7 +262,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 21;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 0;
+  htim1.Init.Period = 65535;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;

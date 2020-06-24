@@ -15,7 +15,7 @@
 
 
 /* Definition for USARTx's NVIC */
-#define HUARTx                           huart2
+#define HUARTx                           huart1
 /* Private variables ---------------------------------------------------------*/
 
 
@@ -27,6 +27,8 @@ extern UART_HandleTypeDef HUARTx;
 
 
 /* Function prototypes ------------------------------------------------------- */
+
+void USART_ClearRx(void);
 
 /** Initializes the USART interface.
  *  @return true if the initialization was successfull and the port is operational,
